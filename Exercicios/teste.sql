@@ -101,91 +101,62 @@ VALUES
 
 -- 1. Selecione o maior valor pago por uma consulta
 
-SELECT MAX(Valor) AS MaiorValor
-FROM Consulta;
+SELECT MAX(Valor) as maiorValor FROM Consulta;
 
 
 -- 2. Selecione o valor médio, maior valor e menor valor das consultas realizadas no mês passado
 
-SELECT
-    AVG(Valor) AS ValorMedio,
-    MAX(Valor) AS MaiorValor,
-    MIN(Valor) AS MenorValor
-FROM Consulta
-WHERE DataCons >= '2026/05/01'
-  AND DataCons < '2026/05/31'
+
 
 
 -- 3. Cadastre uma nova consulta para um paciente
 --    que já está cadastrado
 
-INSERT INTO Consulta (CodCons, DataCons, Valor, CodMed, CodPac)
-VALUES
-    (21, '2026-08-14', 185.00, 3, 1);
+
 
 
 -- 4. Atualize o nome do médico cujo código é 3 para o seu nome
 
-UPDATE Veterinario
-SET Nome = 'Vinicius'
-WHERE CodMed = 3;
-
 
 -- 5. Selecione as espécies de pacientes que estão cadastrados
 
-SELECT Especie
-FROM Animal;
+
 
 
 -- 6. Quantas consultas você já realizou nesta clínica?
 
-SELECT COUNT(*) AS QuantidadeConsultas
-FROM Consulta
-WHERE CodMed = 3;
+
 
 
 -- 7. Quantas consultas foram feitas por todos os médicos?
 
-SELECT COUNT(*) AS TotalConsultas
-FROM Consulta;
+
 
 
 -- 8. Selecione, de forma exclusiva, as espécies de pacientes que estão cadastrados
 
-SELECT DISTINCT Especie
-FROM Animal;
+
 
 
 -- 9. Liste os nomes dos pacientes em ordem alfabética
 
-SELECT NomeAnimal
-FROM Animal
-ORDER BY NomeAnimal ASC;
+
 
 
 -- 10. Qual o valor total de todas as consultas feitas por você?
 
-SELECT SUM(Valor) AS ValorTotal
-FROM Consulta
-WHERE CodMed = 3;
+
 
 
 -- 11. Qual a quantidade de médicos que esta clínica possui?
 
-SELECT COUNT(*) AS QuantidadeMedicos
-FROM Veterinario;
+
 
 
 -- 12. Quanto seria o total das consultas que você realizou se estas consultas tivessem um aumento de 10%?
 
-SELECT SUM(Valor) * 1.10 AS TotalComAumento
-FROM Consulta
-WHERE CodMed = 3;
+
 
 
 -- 13. Quantas consultas foram feitas por você entre os dias 01/01/2026 e 31/03/2026?
 
-SELECT COUNT(*) AS QuantidadeConsultas
-FROM Consulta
-WHERE CodMed = 3
-  AND DataCons BETWEEN '2026-01-01' AND '2026-03-31';

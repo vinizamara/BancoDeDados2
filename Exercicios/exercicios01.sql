@@ -1,7 +1,7 @@
-CREATE DATABASE ClinicaVeterinaria;
+CREATE DATABASE exercicios01;
 GO
 
-USE ClinicaVeterinaria;
+USE exercicios01;
 GO
 
 CREATE TABLE Veterinario (

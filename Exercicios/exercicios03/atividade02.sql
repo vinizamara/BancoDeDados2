@@ -24,7 +24,6 @@ Defina em SQL as seguintes restrições de integridade:
  
 1. O nome_produto é de preenchimento obrigatório. 
 2. Todos os valores da marca na relação Produto existem na relação Marca em id_marca. 
-
 3. O id_pro é um inteiro com 4 dígitos. 
 4. A data do pedido é por padrão a data atual. 
 5. No mesmo pedido, não pode haver mais de uma venda do mesmo produto.
@@ -33,35 +32,55 @@ Defina em SQL as seguintes restrições de integridade:
 ==============================================================================
 */
 
-CREATE DATABASE exercicio03 ;
+CREATE DATABASE exercicio03_atividade02;
 GO
 
-USE exercicio03;
+USE exercicio03_atividade02;
 GO
 
-CREATE TABLE Marca(
-  id_marca INT PRIMARY KEY,
-  nome VARCHAR(100) UNIQUE
+CREATE TABLE Marca (
+  id_marca INT,
+  nome VARCHAR(100),
+
+  CONSTRAINT PK_Marca PRIMARY KEY (id_marca),
+  CONSTRAINT UQ_Marca_Nome UNIQUE (nome)
 );
 
-CREATE TABLE Produto( 
-  id_pro INT PRIMARY KEY CONSTRAINT id_4digitos CHECK(id_pro >= 1 and id_pro <= 9999),
+CREATE TABLE Produto ( 
+  id_pro INT,
   nome_produto VARCHAR(100) NOT NULL, 
-  id_marca INT FOREIGN KEY REFERENCES Marca(id_marca), 
-  estoque INT CONSTRAINT quantidade_estoque CHECK(estoque >= 0), 
-  preco MONEY
+  id_marca INT NOT NULL, 
+  estoque INT, 
+  preco MONEY,
+
+  CONSTRAINT PK_Produto PRIMARY KEY (id_pro),
+  CONSTRAINT CK_Produto_Estoque CHECK (estoque >= 0),
+  CONSTRAINT FK_Produto_Marca FOREIGN KEY (id_marca) REFERENCES Marca(id_marca),
+  CONSTRAINT CK_Produto_idProduto4digitos CHECK (id_pro >= 1000 AND id_pro <= 9999),
+  CONSTRAINT CK_Produto_preco_estoque_valorTotalmaior250 CHECK (preco * estoque <= 250000)
 );
 
-CREATE TABLE Pedido( 
-  id_pedido INT PRIMARY KEY,
-  data DATE,
+CREATE TABLE Pedido ( 
+  id_pedido INT,
+  data DATE CONSTRAINT DF_Pedido_Data DEFAULT (GETDATE()),
   valor_desc MONEY,
-  valor_total MONEY
+  valor_total MONEY,
+
+  CONSTRAINT PK_Pedido PRIMARY KEY (id_pedido)
 );
 
-CREATE TABLE ItemPedido(
-  id_pedido INT FOREIGN KEY REFERENCES Pedido(id_pedido),
-  id_pro INT FOREIGN KEY REFERENCES Produto(id_pro),
+CREATE TABLE ItemPedido (
+  id_pedido INT NOT NULL,
+  id_pro INT NOT NULL,
   qtde INT, 
-  vl_unit MONEY
+  vl_unit MONEY,
+
+  CONSTRAINT PK_ItemPedido PRIMARY KEY (id_pedido, id_pro),
+  CONSTRAINT FK_ItemPedido_Pedido FOREIGN KEY (id_pedido) REFERENCES Pedido(id_pedido),
+  CONSTRAINT FK_ItemPedido_Produto FOREIGN KEY (id_pro) REFERENCES Produto(id_pro),
+  CONSTRAINT CK_ItemPedido_vlUnitMaior1000_AND_qtdeMenor100 CHECK (
+    vl_unit <= 1000 
+    OR
+    (vl_unit > 1000 AND qtde < 100)
+  )
 );

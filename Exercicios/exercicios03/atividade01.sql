@@ -17,10 +17,10 @@
 ==============================================================================
 */
 
-CREATE DATABASE exercicio03 ;
+CREATE DATABASE exercicio03_atividade01 ;
 GO
 
-USE exercicio03;
+USE exercicio03_atividade01;
 GO
 
 CREATE TABLE TB_CLIENTE ( 

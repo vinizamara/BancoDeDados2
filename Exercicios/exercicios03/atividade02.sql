@@ -23,9 +23,8 @@ data – data do pedido
 Defina em SQL as seguintes restrições de integridade:
  
 1. O nome_produto é de preenchimento obrigatório. 
-
-
 2. Todos os valores da marca na relação Produto existem na relação Marca em id_marca. 
+
 3. O id_pro é um inteiro com 4 dígitos. 
 4. A data do pedido é por padrão a data atual. 
 5. No mesmo pedido, não pode haver mais de uma venda do mesmo produto.
@@ -46,7 +45,7 @@ CREATE TABLE Marca(
 );
 
 CREATE TABLE Produto( 
-  id_pro INT PRIMARY KEY,
+  id_pro INT PRIMARY KEY CONSTRAINT id_4digitos CHECK(id_pro >= 1 and id_pro <= 9999),
   nome_produto VARCHAR(100) NOT NULL, 
   id_marca INT FOREIGN KEY REFERENCES Marca(id_marca), 
   estoque INT CONSTRAINT quantidade_estoque CHECK(estoque >= 0), 

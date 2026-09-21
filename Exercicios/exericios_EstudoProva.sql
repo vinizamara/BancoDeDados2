@@ -196,3 +196,35 @@ INNER JOIN Quarto
 ON Quarto.CodQuarto = Reserva.CodQuarto
 WHERE Sexo = 'F' AND Andar = 4
 ORDER BY Nome;
+
+-- 19:
+CREATE VIEW vw_DetalhesReserva AS
+SELECT CodReserva, Nome, Numero, Tipo, DtEntrada, DtSaida
+FROM Reserva
+INNER JOIN Hospede
+ON Hospede.CodHospede = Reserva.CodHospede
+INNER JOIN Quarto
+ON Quarto.CodQuarto = Reserva.CodQuarto;
+
+SELECT * FROM vw_DetalhesReserva;
+
+-- 20:
+CREATE TABLE CategoriaQuarto(
+  CodCategoria INT IDENTITY(5000, 1),
+  NomeCategoria VARCHAR(100) UNIQUE NOT NULL,
+  CodQuarto INT,
+  
+  CONSTRAINT PK_CategoriaQuarto_CodCategoria PRIMARY KEY (CodCategoria)
+);
+
+ALTER TABLE Quarto
+ADD CodCategoria INT CONSTRAINT FK_Quarto_CategoriaQuarto REFERENCES CategoriaQuarto(CodCategoria);
+
+CREATE VIEW vw_QuartoCategoria AS 
+SELECT Numero, Andar, Tipo, NomeCategoria 
+FROM Quarto
+INNER JOIN CategoriaQuarto
+ON CategoriaQuarto.CodCategoria = Quarto.CodCategoria;
+
+SELECT * FROM vw_QuartoCategoria ORDER BY Numero;
+

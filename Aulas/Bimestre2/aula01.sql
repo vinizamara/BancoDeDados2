@@ -194,3 +194,77 @@ nome
 FROM jogador
 WHERE salario > (SELECT AVG(salario) from jogador);
 
+-- quantidade de jogadores por time (separação por times)
+SELECT
+t.nome AS time,
+COUNT(*) AS quantidadeJogadores
+FROM Time t
+INNER JOIN jogador J
+    ON t.idTime = j.idTime
+    GROUP BY t.nome;
+
+-- Média Salarial por time
+SELECT 
+t.nome AS time
+AVG(j.salario) AS mediaSalarial
+FROM Time t
+INNER JOIN Jogador j
+ON t.idTime = j.idTime
+GROUP BY t.nome
+HAVING COUNT(*) > 3;
+
+-- =========================================================
+-- 13. Having
+-- WHERE filtra registros
+-- HAVING filtra grupos
+-- =========================================================
+
+-- Posições com média salarial acima de 70.000
+SELECT
+posicao,
+AVG(salario) AS mediaSalarial
+FROM jogador
+GROUP BY posicao
+HAVING AVG(salario) > 70000;
+
+-- =========================================================
+-- 14. WHERE + GROUP BY + HAVING
+-- WHERE --> filtra antes do agrupamento
+-- HAVING --> filtra depois do agrupamento
+-- =========================================================
+
+SELECT 
+posicao,
+AVG(salario) AS mediaSalarial
+FROM jogador
+WHERE salario > 50000
+GROUP BY posicao
+HAVING AVG(salario) > 70000;
+
+-- =========================================================
+-- 15. SUBSELECT + COM + IN
+-- Jogadores dos times do estado
+-- =========================================================
+
+-- Execute primeiro apenas o subselect para visualizar o resultado:
+SELECT idTime
+FROM Time
+WHERE estado = 'SP';
+
+-- Agora usando o subselect:
+SELECT *
+FROM Jogador
+WHERE idTime IN 
+(
+SELECT idTime
+FROM Time
+WHERE estado = 'SP'
+);
+
+-- Mesma coisa, porém sem subselect
+SELECT j.*
+FROM jogador AS j
+INNER JOIN Time AS t
+ON t.idTime = j.idTime
+WHERE estado = 'SP';
+

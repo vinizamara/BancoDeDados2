@@ -155,7 +155,49 @@ SELECT AVG(salario) AS salarioMedio
 FROM Func;
 
 -- 12. Liste a quantidade de funcionários que trabalham em cada departamento.
+SELECT COUNT(*) AS quantidadeFuncionarios, Depto.nome
+FROM Func
+INNER JOIN Depto
+ON Depto.CodDepto = Func.CodDepto
+GROUP BY Depto.nome;
 
 -- 13. Liste o menor salário pago pela empresa em cada departamento.
+SELECT MIN(salario) AS menorSalario, Depto.nome
+FROM Func
+INNER JOIN Depto
+ON Depto.CodDepto = Func.CodDepto
+GROUP BY Depto.nome;
 
 -- 14. Liste o nome completo de todos os funcionários que não tenham segundo nome.
+SELECT f.PrimeiroNome + ' ' + f.UltimoNome
+FROM Func f
+WHERE f.SegundoNome IS NULL;
+
+-- usando ISNULL:
+
+SELECT f.PrimeiroNome + f.UltimoNome
+FROM Func f
+WHERE ISNULL(SegundoNome, ' ') = ' ';
+
+-- 14 b). Consulta que liste nome de funcionário e nome de seu gerente
+SELECT 
+f.PrimeiroNome + ' ' + ISNULL(f.UltimoNome, '') AS NomeFuncionario,
+g.PrimeiroNome + ' ' + ISNULL(g.UltimoNome, '') AS NomeGerente
+FROM Func f
+INNER JOIN Depto d
+ON f.CodDepto = d.CodDepto
+INNER JOIN Func g
+ON d.CodigoFuncionarioGerente = g.CodFunc;
+
+-- 15. Liste os departamentos que possuem mais de 3 funcionários
+SELECT Depto.nome AS departamentoMaisDe3Funcionarios, COUNT(Func.CodFunc) AS QuantidadeFunc
+FROM Depto
+INNER JOIN Func
+ON Func.CodDepto = Depto.CodDepto
+WHERE QuantidadeFunc > 3;
+
+-- 16. Liste o nome do departamento e funcionário ordenados por departamento e funcionário
+
+-- 17. Liste os nomes dos funcionários que moram em Recife e que exerçam a função de Telefonista
+
+-- 18. Liste a localização do departamento e os nomes dos funcionários que trabalham no Departamento Pessoal

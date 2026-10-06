@@ -56,8 +56,6 @@ update func set salario = 1700
 where codFunc = 5
 
 -- INSERTS ADICIONAIS:
-USE exerc04
-GO
 
 -- 1. Inserção de novos funcionários na tabela Func
 INSERT INTO Func (CodFunc, PrimeiroNome, SegundoNome, UltimoNome, DataNasci, CPF, RG, Endereco, CEP, Cidade, Fone, CodDepto, Funcao, Salario)
@@ -67,7 +65,10 @@ VALUES
     (4, 'ANA', 'PAULA', 'SOUZA', '1995-03-12', '333.444.555-66', '34.567.890-1', 'RUA C, 45', '14402-222', 'FRANCA', '(16) 99999-3333', 3, 'VENDEDORA', 2900.00),
     (5, 'ROBERTO', 'ALVES', 'PEREIRA', '1985-07-08', '444.555.666-77', '45.678.901-2', 'AV D, 1200', '14403-333', 'BATATAIS', '(16) 99999-4444', 4, 'GERENTE FINANCEIRO', 6200.00),
     (6, 'JULIANA', 'CRISTINA', 'LIMA', '1990-12-01', '555.666.777-88', '56.789.012-3', 'RUA E, 88', '14404-444', 'FRANCA', '(16) 99999-5555', 5, 'ANALISTA DE MARKETING', 4100.00),
-    (7, 'LUCAS', 'GABRIEL', 'RODRIGUES', '1998-09-18', '666.777.888-99', '67.890.123-4', 'RUA F, 500', '14405-555', 'FRANCA', '(16) 99999-6666', 6, 'DESENVOLVEDOR', 4800.00);
+    (7, 'LUCAS', 'GABRIEL', 'RODRIGUES', '1998-09-18', '666.777.888-99', '67.890.123-4', 'RUA F, 500', '14405-555', 'FRANCA', '(16) 99999-6666', 6, 'DESENVOLVEDOR', 4800.00),
+    (8, 'FERNANDO', 'RICARDO', 'ALMEIDA', '1987-03-22', '777.888.999-00', '78.901.234-5', 'RUA G, 300', '14406-666', 'FRANCA', '(16) 99999-7777', 3, 'SUPERVISOR', 5200.00),
+    (9, 'CAMILA', 'BEATRIZ', 'CASTRO', '1991-08-14', '888.999.000-11', '89.012.345-6', 'AV H, 750', '14407-777', 'FRANCA', '(16) 99999-8888', 2, 'SUPERVISOR', 5100.00),
+    (10, 'MARCOS', 'VINICIUS', 'ROCHA', '1989-11-05', '999.000.111-22', '90.123.456-7', 'RUA I, 120', '14408-888', 'FRANCA', '(16) 99999-9999', 4, 'SUPERVISOR', 5300.00);
 
 -- 2. Atualização do departamento do funcionário inserido anteriormente (José)
 UPDATE Func 
@@ -113,4 +114,48 @@ FROM Func;
 SELECT f.PrimeiroNome, d.Nome as Depto, f.funcao
 FROM func f 
 INNER JOIN depto d ON f.codDepto = d.codDepto;
- 
+
+-- 7. Liste todos os departamentos com seus respectivos gerentes.
+SELECT d.nome, f.PrimeiroNome, f.SegundoNome, f.UltimoNome
+FROM Depto d
+INNER JOIN Func f
+ON f.CodFunc = d.CodigoFuncionarioGerente;
+
+-- 8. Liste o valor da folha de pagamento de cada departamento (nome).
+SELECT Depto.nome as NomeDepartamento, SUM(Salario) AS TotalFolhaPagamentoDepartamento
+FROM Func
+INNER JOIN Depto
+ON Depto.CodDepto = Func.CodDepto
+GROUP BY Depto.nome;
+
+-- 9. Liste os departamentos dos funcionários que têm a função de supervisor.
+SELECT Depto.nome AS nomeDepartamento, Func.primeiroNome, Func.Funcao
+FROM Depto
+INNER JOIN Func
+ON Depto.CodDepto = Func.CodDepto
+WHERE Func.Funcao = 'SUPERVISOR';
+
+-- Com subselect:
+
+SELECT nome
+FROM Depto
+WHERE CodDepto IN
+(
+SELECT CodDepto
+FROM Func
+WHERE Func.Funcao = 'SUPERVISOR'
+);
+
+-- 10. Liste a quantidade de funcionários desta empresa.
+SELECT count(*) AS QtdeFunc
+FROM Func;
+
+-- 11. Liste o salário médio pago pela empresa.
+SELECT AVG(salario) AS salarioMedio
+FROM Func;
+
+-- 12. Liste a quantidade de funcionários que trabalham em cada departamento.
+
+-- 13. Liste o menor salário pago pela empresa em cada departamento.
+
+-- 14. Liste o nome completo de todos os funcionários que não tenham segundo nome.

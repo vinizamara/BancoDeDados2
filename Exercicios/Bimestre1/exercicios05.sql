@@ -170,21 +170,67 @@ LEFT JOIN Departamento
     ON Funcionario.codFuncionario = Departamento.codGerente
     WHERE Departamento.codGerente IS NULL;
 
--- 3. Quantos funcionários da categoria Auxiliar existem no departamento de Compras? / FALATA COUNT
-SELECT
-    Funcionario.nomeFuncionario,
-    Funcionario.categoria
-FROM Funcionario
-INNER JOIN Departamento
-    ON Funcionario.codDepartamento = Departamento.codDepartamento
-    WHERE Funcionario.categoria = 'Auxiliar' and Departamento.nomeDepartamento = 'Compras';
+-- 3. Quantos funcionários da categoria Auxiliar existem no departamento de Compras?
+SELECT 
+    COUNT(F.codFuncionario) AS TotalAuxiliares
+FROM Funcionario F
+INNER JOIN Departamento D
+    ON F.codDepartamento = D.codDepartamento
+WHERE F.categoria = 'Auxiliar' 
+  AND D.nomeDepartamento = 'COMPRAS';
+
 
 -- 4. Quais os nomes e CPFs dos funcionários que foram inseridos em novos projetos no mês de Agosto?
+SELECT DISTINCT
+    F.nomeFuncionario,
+    F.cpf
+FROM Funcionario F
+INNER JOIN FuncProjeto FP
+    ON F.codFuncionario = FP.codFuncionario
+WHERE MONTH(FP.dataInicio) = 8;
+
 
 -- 5. Qual o nome de cada departamento e os nomes dos seus gerentes?
+SELECT 
+    D.nomeDepartamento,
+    F.nomeFuncionario AS nomeGerente
+FROM Departamento D
+INNER JOIN Funcionario F
+    ON D.codGerente = F.codFuncionario;
+
 
 -- 6. Qual a maior idade e idade média dos funcionários dos departamentos FATURAMENTO, VENDAS ou COMPRAS?
+SELECT 
+    D.nomeDepartamento,
+    MAX(F.idade) AS MaiorIdade,
+    AVG(CAST(F.idade AS DECIMAL(10,2))) AS IdadeMedia
+FROM Funcionario F
+INNER JOIN Departamento D
+    ON F.codDepartamento = D.codDepartamento
+WHERE D.nomeDepartamento IN ('FATURAMENTO', 'VENDAS', 'COMPRAS')
+GROUP BY D.nomeDepartamento;
+
 
 -- 7. Liste os nomes dos funcionários, nomes e descrição de cada projeto que trabalham.
+SELECT 
+    F.nomeFuncionario,
+    P.nomeProjeto,
+    P.descProjeto
+FROM Funcionario F
+INNER JOIN FuncProjeto FP
+    ON F.codFuncionario = FP.codFuncionario
+INNER JOIN Projeto P
+    ON FP.codProjeto = P.codProjeto;
+
 
 -- 8. Liste os nomes dos funcionários, nomes dos departamentos em que trabalham e nomes dos gerentes de cada departamento. Liste em ordem alfabética do nome do departamento e depois do nome do funcionário.
+SELECT 
+    F.nomeFuncionario,
+    D.nomeDepartamento,
+    G.nomeFuncionario AS nomeGerente
+FROM Funcionario F
+INNER JOIN Departamento D
+    ON F.codDepartamento = D.codDepartamento
+LEFT JOIN Funcionario G
+    ON D.codGerente = G.codFuncionario
+ORDER BY D.nomeDepartamento ASC, F.nomeFuncionario ASC;

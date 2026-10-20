@@ -2,7 +2,7 @@
 
 ## 📌 Descrição
 
-Este repositório contém os materiais de aula, estudos e exercícios práticos desenvolvidos durante a disciplina de **Banco de Dados II** no curso superior. O objetivo principal é registrar a evolução do aprendizado prático e teórico utilizando **SQL Server**, abordando desde a modelagem física até a construção de consultas complexas, manipulação de dados e conceitos avançados de bancos de dados relacionais.
+Este repositório contém os materiais de aula, estudos e exercícios práticos desenvolvidos durante a disciplina de **Banco de Dados II**. O objetivo principal é registrar a evolução do aprendizado prático e teórico utilizando **SQL Server**, abordando desde a modelagem física até a construção de consultas complexas, manipulação de dados e conceitos avançados de bancos de dados relacionais.
 
 ## 📁 Estrutura do Repositório
 

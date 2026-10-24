@@ -200,6 +200,7 @@ FROM participante
 GROUP BY uf
 ORDER BY TotalCadastrados DESC;
 
+
 -- 2. Liste o tipo de prova e a média de duração das provas de cada tipo. Exiba somente os tipos de prova cuja média de duração seja superior a 60 minutos.
 SELECT tipo, AVG(tempo_minutos) AS MediaDeDuracao
 FROM prova
@@ -207,16 +208,21 @@ GROUP BY tipo
 HAVING AVG(tempo_minutos) > 60;
 
 
-
-
 -- 3. Liste o nome dos participantes e a quantidade de pratos preparados por cada um. Exiba somente os participantes que tenham preparado mais de 2 pratos.
-
-
-
-
+SELECT participante.nome, COUNT(prato.*) AS quantidadePratosPreparados
+FROM participante
+INNER JOIN prato
+ON participante.id = prato.id_partic
+GROUP BY participante.id
+HAVING COUNT(prato.*) > 2;
 
 
 -- 4. Liste o nome de cada ingrediente e a soma total das quantidades utilizadas nos pratos. Exiba o nome do ingrediente, a unidade de medida e a quantidade total utilizada, ordenando do ingrediente mais utilizado para o menos utilizado. Considere as quantidades separadamente por unidade de medida.
-
+SELECT ingrediente.nome, SUM(utiliza.quantidade) AS QuantidadeTotal, utiliza.unidade_medida
+FROM ingrediente
+INNER JOIN utiliza
+ON ingrediente.id = utiliza.id_ingrediente
+GROUP BY ingrediente.id, ingrediente.nome, utiliza.unidade_medida
+ORDER BY QuantidadeTotal DESC;
 
 

@@ -71,5 +71,52 @@ ALTER TABLE Pagamento
 ADD DataCadastro DATE CONSTRAINT DF_Candidato_DataCadastro DEFAULT GETDATE();
 
 -- 3 - Quando uma nova inscrição for realizada, o sistema deverá registrar a inscrição e gerar automaticamente um boleto de pagamento no banco de dados.
+BEGIN TRANSACTION T1
+    BEGIN TRY
 
+        DECLARE @CodIns INT
 
+        INSERT INTO Inscricao(AnoInscr, Situacao, CodCan, CodCurOpcao1, CodCurOpcao2)
+                    VALUES(2019, 'Aguardando pagamento', 1, 13, 27)
+        
+        SET @CodIns = SCOPE_IDENTITY()
+        
+        INSERT INTO Pagamento(DtRegistro, CodIns)
+                    VALUES(GETDATE(), @CodIns)
+        
+        COMMIT TRANSACTION T1
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION T1
+    END CATCH
+
+-- 4 - Após a realização da prova do vestibular, o sistema deverá registrar a nota obtida pelo candidato na inscrição e atualizar a situação do candidato para um dos valores permitidos.
+BEGIN TRANSACTION T2
+    BEGIN TRY
+        UPDATE Inscricao SET Nota = 85.00 WHERE CodIns = 117
+        UPDATE Candidato SET Situacao = 'Aprovado' WHERE CodCan = (
+            SELECT CodCan FROM Inscricao WHERE CodIns = 117
+        )
+
+        COMMIT TRANSACTION T2
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION T2
+    END CATCH
+
+-- 5 - Quando um pagamento for registrado, o sistema deverá atualizar os dados do pagamento e alterar a situação da inscrição correspondente para "Pago".
+BEGIN TRANSACTION T3
+    BEGIN TRY
+        UPDATE Pagamento
+            SET VlPago = 75.00, VlJurosMulta = 5.00, DtPagto = '2019-06-15'
+            WHERE CodPag = 11556
+
+        UPDATE Inscricao SET Situacao = 'Pago' WHERE CodIns = (
+            SELECT CodIns FROM Pagamento WHERE CodPag = 11556
+        )
+
+        COMMIT TRANSACTION T3
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION T3
+    END CATCH

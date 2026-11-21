@@ -102,7 +102,7 @@ VALUES
 -- 2 - Crie uma view que apresente o código da reserva, nome do hóspede, número do quarto, nome do empregado, datas de entrada e saída e valor total gasto.
 
 GO
-CREATE VIEW vw_MostrarReserva AS
+CREATE VIEW VW_MostrarReserva AS
 SELECT R.CodRes, H.Nome AS NomeHospede, Q.Numero, E.Nome AS NomeEmpregado, R.DtEntrada, R.DtSaida, R.TotalGasto
 FROM Reserva R
 INNER JOIN Hospede H 
@@ -113,11 +113,11 @@ INNER JOIN Empregado E
 ON E.CodEmp = R.CodEmp;
 GO
 
-SELECT * FROM vw_MostrarReserva;
+SELECT * FROM VW_MostrarReserva;
 
 -- 3 - Crie uma view que apresente o número do quarto, preço da diária, quantidade de reservas e valor total arrecadado por quarto, incluindo os quartos sem reservas.
 GO
-CREATE VIEW vw_DadosQuartos AS
+CREATE VIEW VW_DadosQuartos AS
 SELECT Q.Numero, Q.Preco, COUNT(R.CodRes) AS QuantidadeReservaQuarto, ISNULL(SUM(R.TotalGasto), 0.00) AS TotalGastoReserva
 FROM Quarto Q
 LEFT JOIN Reserva R
@@ -125,4 +125,46 @@ ON Q.CodQua = R.CodQua
 GROUP BY Q.Numero, Q.Preco;
 GO
 
-SELECT * FROM vw_DadosQuartos;
+SELECT * FROM VW_DadosQuartos;
+
+-- 4 - Crie uma transação que cadastre uma nova reserva e atualize o salário do empregado responsável, aumentando-o em 5%. 
+BEGIN TRANSACTION TRAN_NovaReserva
+    BEGIN TRY
+        INSERT INTO Reserva (DtEntrada, DtSaida, TotalGasto, CodEmp, CodHos, CodQua)
+        VALUES ('2026-10-10', '2026-10-11', 20.00, 1, 1, 1)
+
+        UPDATE Empregado 
+        SET salario = salario * 1.05
+        WHERE CodEmp = 1
+
+        COMMIT TRANSACTION TRAN_NovaReserva
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION TRAN_NovaReserva
+    END CATCH
+
+-- 5 - Crie uma transação que exclua uma reserva e reduza em 10% o preço da diária do quarto associado.
+BEGIN TRANSACTION TRAN_ExcluirReserva
+    BEGIN TRY
+        UPDATE Quarto SET preco = preco * 0.90 WHERE CodQua = (SELECT CodQua FROM Reserva WHERE CodRes = 1);
+
+        DELETE FROM Reserva WHERE CodRes = 1;
+
+        COMMIT TRANSACTION TRAN_ExcluirReserva
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION TRAN_ExcluirReserva
+    END CATCH
+
+-- 6 - Crie uma consulta que apresente a quantidade de reservas e o valor total gasto pelos hóspedes de cada cidade.
+SELECT H.Cidade AS CidadeHospede, H.Nome, COUNT(R.CodRes) AS QuantidadeReservas, SUM(R.TotalGasto) AS TotalGastoReservas
+FROM Reserva R
+INNER JOIN Hospede H
+ON R.CodHos = H.CodHos
+GROUP BY H.Cidade;
+
+-- 7 - Crie uma consulta que apresente a função dos empregados, a quantidade de empregados por função e a média salarial de cada função.
+SELECT E.Funcao, COUNT(E.CodEmp) AS QuantidadeEmpregados, AVG(E.Salario) AS MediaSalarial
+FROM Empregado E
+GROUP BY E.Funcao;
+
